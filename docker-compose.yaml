@@ -1,10 +1,9 @@
-version: '3'
+version: '3.5'
 
 services:
   app:
-    build:
-      context: ./nodejs
-    container_name: nodejs
+    image: dockmelo/desafio-node-api
+    container_name: nodejs-desafio
     entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh node index.js
     networks: 
       - desafio
@@ -35,9 +34,8 @@ services:
       - nginx
 
   nginx:
-    build:
-        context: ./nginx
-    container_name: nginx
+    image: dockmelo/desafio-nginx-proxy
+    container_name: nginx-desafio
     restart: always
     ports:
       - 8080:80
