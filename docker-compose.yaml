@@ -4,11 +4,12 @@ services:
   app:
     image: dockmelo/desafio-node-api
     container_name: nodejs-desafio
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh node index.js
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 120s node index.js
     networks: 
       - desafio
     volumes:
       - ./nodejs:/usr/src/app
+      - /usr/src/app/node_modules
     tty: true
     ports:
       - 3000:3000
@@ -23,6 +24,7 @@ services:
     restart: always
     tty: true
     volumes:
+      - ./database:/docker-entrypoint-initdb.d
       - ./mysql:/var/lib/mysql
     environment: 
       - MYSQL_DATABASE=nodedb
@@ -30,8 +32,6 @@ services:
       - MYSQL_USER=root
     networks:
       - desafio
-    depends_on: 
-      - nginx
 
   nginx:
     image: dockmelo/desafio-nginx-proxy
@@ -41,7 +41,6 @@ services:
       - 8080:80
     networks:
       - desafio
-
 
 networks: 
   desafio:
